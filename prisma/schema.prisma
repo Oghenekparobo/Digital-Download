@@ -10,6 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -64,18 +65,18 @@ model Session {
 }
 
 model Product {
-  id          String   @id @default(cuid())
+  id          String     @id @default(cuid())
   title       String
   description String?
   image       String?
   url         String?
   price       Decimal?
-  free        Boolean  @default(false)
-  published   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  free        Boolean    @default(false)
+  published   Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+  author      User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId    String
-  Purchase Purchase[]
+  Purchase    Purchase[]
 }
 
 model Purchase {
