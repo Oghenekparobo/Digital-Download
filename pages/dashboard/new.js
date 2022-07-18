@@ -56,8 +56,7 @@ export default function NewProduct() {
                   method: "POST",
                 });
                 
-
-                router.push('dashboard');
+                router.push(`/dashboard`);
               }}
             >
               <div className="form-group flex flex-col text-center py-4">
