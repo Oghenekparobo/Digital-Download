@@ -23,8 +23,8 @@ export default function Dashboard() {
   return (
     <div className="">
       <Head>
-        <title>{session.user.name} {""} session</title>
-        <meta name="description" content="" />
+        <title>{session.user.name} {""} Dashboard</title>
+        <meta name="description" content="ashboard" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
