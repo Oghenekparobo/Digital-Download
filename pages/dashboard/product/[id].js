@@ -1,41 +1,37 @@
-import Heading from "pages/components/Heading";
-import { useState } from "react";
+import prisma from "lib/prisma";
+import { getProduct } from "lib/data";
+import { useSession, getSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
-import Head from "next/head";
+import {useState} from 'react'
 
-export default function NewProduct() {
-  const [title, setTitle] = useState("");
-  const [free, setFree] = useState(false);
-  const [price, setPrice] = useState(0);
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState("");
-  const [product, setProduct] = useState("");
+export default function Product({ product }) {
+    
+  const [title, setTitle] = useState(product.title);
+  const [free, setFree] = useState(product.free);
+  const [price, setPrice] = useState(product.price / 100);
+  const [description, setDescription] = useState(product.description);
+  const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState(product.image);
+  const [newproduct, setNewProduct] = useState(null);
+  const [changedLink, setChangedLink] = useState(false);
+
+  if (!product) return "hi no product";
 
   const { data: session, status } = useSession();
   const router = useRouter();
-
   const loading = status === "loading";
   if (loading) return "loading";
 
-  if (!session) {
-    router.push("/");
+  if (!session.user.name) {
+    router.push("/setup");
     return;
   }
+
   return (
     <div className="">
-      <Head>
-        <title>Digital Downloads Web Applicatiion</title>
-        <meta name="description" content="" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <div>
-        <Heading />
-      </div>
-
       <div className="flex justify-center mt-10">
         <div>
-          <h1 className="text-xl font-bold text-center py-1">Create Product</h1>
+          <h1 className="text-xl font-b old text-center py-1">Update Product</h1>
 
           <div className="capitalize bg-fuchsia-500 px-10 py-4">
             <form
@@ -44,19 +40,20 @@ export default function NewProduct() {
                 e.preventDefault();
 
                 const body = new FormData();
+                body.append('id' , product.id)
                 body.append("image", image);
-                body.append("product", product);
+                body.append("product", newproduct);
                 body.append("title", title);
                 body.append("free", free);
                 body.append("price", price);
                 body.append("description", description);
 
-                await fetch("/api/new", {
+                await fetch("/api/edit", {
                   body,
                   method: "POST",
                 });
-                
-                router.push(`/dashboard`);
+
+                router.push('/dashboard');
               }}
             >
               <div className="form-group flex flex-col text-center py-4">
@@ -130,6 +127,7 @@ export default function NewProduct() {
                           return false;
                         }
                         setImage(event.target.files[0]);
+                        setImageUrl(URL.createObjectURL(event.target.files[0]));
                       }
                     }}
                   />
@@ -148,11 +146,20 @@ export default function NewProduct() {
                           alert("Maximum size allowed is 20MB");
                           return false;
                         }
-                        setProduct(event.target.files[0]);
+                        setNewProduct(event.target.files[0]);
+                        setChangedLink(true);
                       }
                     }}
                   />
                 </label>
+              </div>
+
+              <div className="">
+                {!changedLink && (
+                  <a className="underline" href={product.url}>
+                    Link
+                  </a>
+                )}
               </div>
 
               <div className="submit text-center py-4">
@@ -164,7 +171,7 @@ export default function NewProduct() {
                       : "cursor-not-allowed text-gray-800 border-gray-800"
                   }`}
                 >
-                  Create product
+                  Update
                 </button>
               </div>
             </form>
@@ -173,4 +180,22 @@ export default function NewProduct() {
       </div>
     </div>
   );
+}
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+  if (!session) return { props: {} };
+
+  let product = await getProduct(context.params.id, prisma);
+  product = JSON.parse(JSON.stringify(product));
+
+  if (!product) return { props: {} };
+
+  if (session.user.id !== product.author.id) return { props: {} };
+
+  return {
+    props: {
+      product,
+    },
+  };
 }
