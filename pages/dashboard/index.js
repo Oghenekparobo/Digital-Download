@@ -43,10 +43,14 @@ export default function Dashboard({ products }) {
       <div className=" grid grid-cols-2 ">
         {products.map((product, index) => (
           <div className="mx-auto mb-10 shadow" key={index}>
-            <div className="">
+            
+            <div className="relative">
               <div className="prod-box rounded-xl overflow-hidden  w-96 border bg-fuchsia-500">
                 <div className="prod-title text-center text-xl text-white py-2 capitalize italic">
                   <h1>{product.title}</h1>
+                  <div className='absolute bg-white top-20 right-4 px-4 py-1 rounded z-20 text-fuchsia-500 hover:text-fuchsia-300 transition-all'>
+                   <Link href={`/product/${product.id}`}><a>View</a></Link>
+                  </div>
                 </div>
                 <div classNme="prod-img overflow-hidden bg-fuchsia-500">
                   {product.image ? (
