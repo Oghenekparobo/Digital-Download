@@ -40,49 +40,55 @@ export default function Dashboard({ products, purchases }) {
         <p>{session.user.name}</p>
       </div>
       {products.length > 0 && (
-       <div className="">
-         <h1 className='text-center text-xl italic font-bold'>Products</h1>
+        <div className="">
+          <h1 className="text-center text-xl italic font-bold">Products</h1>
           <div className=" grid grid-cols-2 ">
-          {products.map((product, index) => (
-            <div className="mx-auto mb-10 shadow" key={index}>
-              <div className="relative">
-                <div className="prod-box rounded-xl overflow-hidden  w-96 border bg-fuchsia-500">
-                  <div className="prod-title text-center text-xl text-white py-2 capitalize italic">
-                    <h1>{product.title}</h1>
-                    <div className="absolute bg-white top-20 right-4 px-4 py-1 rounded z-20 text-fuchsia-500 hover:text-fuchsia-300 transition-all">
-                      <Link href={`/product/${product.id}`}>
-                        <a>View</a>
-                      </Link>
+            {products.map((product, index) => (
+              <div className="mx-auto mb-10 shadow" key={index}>
+                <div className="relative">
+                  <div className="prod-box rounded-xl overflow-hidden  w-96 border bg-fuchsia-500">
+                    <div className="prod-title text-center text-xl text-white py-2 capitalize italic">
+                      <h1>{product.title}</h1>
+                      <div className="absolute bg-white top-20 right-4 px-4 py-1 rounded z-20 text-fuchsia-500 hover:text-fuchsia-300 transition-all">
+                        <Link href={`/product/${product.id}`}>
+                          <a>View</a>
+                        </Link>
+                      </div>
+                      <div className="sales">
+                        {product.purchases && product.purchases.length > 0 && (
+                          <p className="mt-3 text-right">
+                            {product.purchases.length} sales
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <div classNme="prod-img overflow-hidden bg-fuchsia-500">
-                    {product.image ? (
-                      <img src="/prod.jpg" alt="" className="w-1/2 h-80" />
-                    ) : (
-                      <Image src="/prod.jpg" width={400} height={550} />
-                    )}
-                  </div>
-                  <div className="prod-price_edit text-white p-2 ">
-                    <div className="flex justify-between ">
-                      {product.free ? (
-                        <span>Free</span>
+                    <div classNme="prod-img overflow-hidden bg-fuchsia-500">
+                      {product.image ? (
+                        <img src="/prod.jpg" alt="" className="w-1/2 h-80" />
                       ) : (
-                        <a className="price">${product.price / 100}</a>
+                        <Image src="/prod.jpg" width={400} height={550} />
                       )}
-                      <Link href={`/dashboard/product/${product.id}`}>
-                        <a className="bg-white text-fuchsia-500 px-4 rounded hover:text-fuchsia-300 transition-all">
-                          edit
-                        </a>
-                      </Link>
+                    </div>
+                    <div className="prod-price_edit text-white p-2 ">
+                      <div className="flex justify-between ">
+                        {product.free ? (
+                          <span>Free</span>
+                        ) : (
+                          <a className="price">${product.price / 100}</a>
+                        )}
+                        <Link href={`/dashboard/product/${product.id}`}>
+                          <a className="bg-white text-fuchsia-500 px-4 rounded hover:text-fuchsia-300 transition-all">
+                            edit
+                          </a>
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-       </div>
-       
       )}
 
       {purchases.length > 0 && (
@@ -129,7 +135,7 @@ export async function getServerSideProps(context) {
   const session = await getSession(context);
   if (!session) return { props: {} };
 
-  let products = await getProducts({ author: session.user.id }, prisma);
+  let products = await getProducts({ author: session.user.id , includePurchases: true } , prisma);
   products = JSON.parse(JSON.stringify(products));
 
   let purchases = await getPurchases({ author: session.user.id }, prisma);

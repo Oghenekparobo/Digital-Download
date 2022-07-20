@@ -27,10 +27,17 @@ export default function Heading() {
             <div className="pl-2 capitalize flex">
               <div className="">
                 {router.asPath === "/dashboard" && (
-                  <div className="border-l-black border-l-4  cursor-pointer flex items-center w-40 px-4 h-20  font-light hover:bg-black hover:text-white transition-all">
-                    <Link href={`/dashboard/new`}>
-                      <a className="">Create Product</a>
-                    </Link>
+                  <div className="">
+                    <div className="border-l-black border-l-4  cursor-pointer flex items-center w-40 px-4 h-20  font-light hover:bg-black hover:text-white transition-all">
+                      <Link href={`/dashboard/sales`}>
+                        <a className="">See Sales</a>
+                      </Link>
+                    </div>
+                    <div className="border-l-black border-l-4  cursor-pointer flex items-center w-40 px-4 h-20  font-light hover:bg-black hover:text-white transition-all">
+                      <Link href={`/dashboard/new`}>
+                        <a className="">Create Product</a>
+                      </Link>
+                    </div>
                   </div>
                 )}
               </div>
@@ -48,17 +55,19 @@ export default function Heading() {
         </div>
       </header>
       <div className="px-2 relative">
-        {(router.asPath === "/" || router.asPath === "/dashboard") ? (
+        {router.asPath === "/" || router.asPath === "/dashboard" ? (
           <h1 className=" custom-txt italic  hidden md:block ">
             Digital <br /> Downloads
           </h1>
-        ) : ''}
+        ) : (
+          ""
+        )}
         <div className="absolute top-60 left-28  hover:text-white  hover:bg-black text-2xl bg-fuchsia-500 rounded px-6 py-2 transiton-all">
-          {(router.asPath === "/dashboard" )? (
+          {router.asPath === "/dashboard" ? (
             <p className="cursor-not-allowed">Your Dashboard</p>
           ) : (
             <Link href={`/dashboard`}>
-              <a className=" ">Dashboard</a>
+              <a className=" ">Go To Dashboard</a>
             </Link>
           )}
         </div>
