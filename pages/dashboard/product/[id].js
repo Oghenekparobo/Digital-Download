@@ -1,5 +1,5 @@
 import prisma from "lib/prisma";
-import { getProduct } from "lib/data";
+import { getProduct} from "lib/data";
 import { useSession, getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import {useState} from 'react'
@@ -188,6 +188,8 @@ export async function getServerSideProps(context) {
 
   let product = await getProduct(context.params.id, prisma);
   product = JSON.parse(JSON.stringify(product));
+
+
 
   if (!product) return { props: {} };
 
